@@ -5,7 +5,6 @@ colorama==0.4.3
 distlib==0.3.1
 filelock==3.0.12
 Flask==1.1.2
-Flask-Cors==3.0.8
 gunicorn==20.0.4
 isort==4.3.21
 itsdangerous==1.1.0
@@ -13,12 +12,11 @@ Jinja2==2.11.2
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
-mysql-connector-python-rf==2.2.2
+mysql-connector==2.2.9
 pylint==2.5.3
-python-dotenv==0.14.0
 rivescript==1.15.0
 six==1.15.0
 toml==0.10.1
-virtualenv==20.0.27
+virtualenv==20.0.28
 Werkzeug==1.0.1
 wrapt==1.12.1
