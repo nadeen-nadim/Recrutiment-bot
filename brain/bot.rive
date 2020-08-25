@@ -1,0 +1,191 @@
+! version = 2.0
+
+> begin
++ request
+* <get met> == undefined => <set met=true> {topic=welcome}{ok}
+- {ok}
++ start
+-{topic=welcome}
+< begin
+
+> topic welcome
++ *
+- Hi, welcome to recruitment chatbot.\n
+^ During our conversation, I will ask you some questions\s 
+^ and give the answers in a form of choices.\n
+^ So, you select one of them\s
+^ by typing the number corresponding to the choice\n
+^ Let us begin:\n
+^ Are you looking for a job or internship?\n
+^ 1- Internship\n
+^ 2- Job {topic=searchtype}
+< topic
+
+> topic searchtype
++ #
+* <star> == 1 => Are you a college student?\n
+^ 1- Yes\n
+^ 2- No {topic=internship}
+* <star> == 2 =>  Choose Your major from the list above\n <set num=-1><call>getMajor <get num></call>{topic=job}
+- Please choose one of the options listed only {topic=searchtype}
+< topic
+
+> topic internship
++ #
+* <star> == 1 =>  <set num=-1><call>getField <get num></call>{topic=field}
+* <star> == 2 => Unfortunatly, I can't help you.\n
+^ I can help college students only in this field
+- please choose correct number {topic=internship}
+< topic 
+
+> topic field
++ #
+- <set num=<star>> <call>getField <get num> </call>{topic=year}
+< topic
+
+> topic year
++ # 
+- Do you have any preferences?\n
+^ 1- Yes\n
+^ 2- No {topic=preference}
+< topic
+
+> topic preference
++ #
+* <star> == 1 => Do you prefer our recommendation to be based on\n
+^ 1- Location\n
+^ 2- Duration\n
+^ 3- No, I changed my mind {topic=pref2}
+* <star> == 2 => <call>getAllInternships  </call>{topic=welcome}
+- please choose correct number{topic=preference}
+< topic
+
+> topic pref2
++ #
+* <star> == 1 => <set num=-1><call>getLocations <get num></call> {topic=location}
+* <star> == 2 => <set num=-1><call>getDuration <get num></call> {topic=duration}
+* <star> == 3 => <call>getAllInternships  </call>{topic=welcome}
+- please choose correct number{topic=pref2}
+< topic
+
+> topic location
++ #
+- <set num=<star>> <call>getLocations <get num> </call>{topic=welcome}
+< topic
+
+> topic duration
++ #
+- <set num=<star>> <call>getDuration <get num> </call>{topic=welcome}
+< topic
+
+> topic job
++ #
+- <set num=<star>> <call>getMajor <get num> </call>{topic=requiredskills} 
+< topic
+
+> topic requiredskills
++ #
+-  The job offers we have require the following: /n 
+^ <set num=<star>> <call>getRequiredSkills <get num> </call>{topic=skills} 
+< topic
+
+> topic skills
++ #
+- Do you have any of the following experiences ?\n
+^ <set num=-1><call>getExperience <get num></call>{topic=getexp}
+< topic 
+
+> topic getexp
++ #
+-<set num=<star>> <call>getExperience <get num> </call>{topic=experience}
+< topic
+
+> topic experience
++ #
+- Do you prefer the search to be based on salary or location?\n
+^ 1- none\n
+^ 2- Type\n
+^ 3- location\n {topic=pref3}
+> topic
+
+> topic pref3
++ #
+* <star> == 1 => <call>getAllJobs  </call>{topic=welcome}
+* <star> == 2 => <set num=-1><call>getJobType <get num></call> {topic=type}
+* <star> == 3 => <set num=-1><call>getJobLocations <get num></call> {topic=joblocation}
+- try again please{topic=pref3}
+< topic
+
+> topic type
++ #
+- <set num=<star>> <call>getJobType <get num> </call>{topic=welcome} 
+< topic
+
+> topic joblocation
++ #
+- <set num=<star>> <call>getJobLocations <get num> </call>{topic=welcome} 
+< topic
+
+> object getLocations python
+import utilities
+print("Choose one of the available locations:")
+records = utilities.getLocations(int(args[0]))
+return records
+< object
+
+> object getDuration python
+import utilities
+print("Choose one of the available Durations:")
+records = utilities.getDuration(int(args[0]))
+return records
+< object
+
+> object getField python
+import utilities
+print("Choose one of the available Fields:")
+records = utilities.getField(int(args[0]))
+return records
+< object
+
+> object getMajor python
+import utilities
+records = utilities.getMajor(int(args[0]))
+return records
+< object
+
+> object getRequiredSkills python
+import utilities
+records =utilities.getRequiredSkills(int(args[0]))
+return records
+< object
+
+> object getJobType python
+import utilities
+records = utilities.getJobType(int(args[0]))
+return records
+< object
+
+> object getExperience python
+import utilities
+records = utilities.getExperince(int(args[0]))
+return records
+< object
+
+> object getJobLocations python
+import utilities
+records =utilities.getJobLocations(int(args[0]))
+return records
+< object
+
+> object getAllJobs python
+import utilities
+records =utilities.getAllJobs()
+return records
+< object
+
+> object getAllInternships python
+import utilities
+records =utilities.getAllInternships()
+return records
+< object
+
