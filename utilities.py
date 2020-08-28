@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
-import config
-db = create_engine(config.d)
+import os
+db = create_engine(os.getenv('DATABASE_URL'))
 
 def fill_string(records):
     string = str(records)
