@@ -91,7 +91,7 @@
 > topic skills
 + #
 * <star> == 1 => <set num=-1> <call>getExperience <get num> </call>{topic=getexp}
-* <star> == 2 => ooops .... prepare ur self then and visit us again ... we'r waiting 
+* <star> == 2 => ooops .... prepare ur self then and visit us again ... we'r waiting {topic=random}
 < topic 
 
 > topic getexp
