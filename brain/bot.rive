@@ -26,7 +26,7 @@
 * <star> == 1 => Are you a college student?\n
 ^ 1- Yes\n
 ^ 2- No {topic=internship}
-* <star> == 2 =>  Choose Your major from the list above\n <set num=-1><call>getMajor <get num></call>{topic=job}
+* <star> == 2 => <set num=-1><call>getMajor <get num></call>{topic=job}
 - Please choose one of the options listed only {topic=searchtype}
 < topic
 
@@ -85,14 +85,13 @@
 
 > topic requiredskills
 + #
--  The job offers we have require the following: /n 
-^ <set num=<star>> <call>getRequiredSkills <get num> </call>{topic=skills} 
+- <call>getRequiredSkills </call>{topic=skills} 
 < topic
 
 > topic skills
 + #
-- Do you have any of the following experiences ?\n
-^ <set num=-1><call>getExperience <get num></call>{topic=getexp}
+* <star> == 1 => <set num=-1> <call>getExperience <get num> </call>{topic=getexp}
+* <star> == 2 => ooops .... prepare ur self then and visit us again ... we'r waiting 
 < topic 
 
 > topic getexp
@@ -102,7 +101,7 @@
 
 > topic experience
 + #
-- Do you prefer the search to be based on salary or location?\n
+- Do you prefer the search to be based on Type or location?\n
 ^ 1- none\n
 ^ 2- Type\n
 ^ 3- location\n {topic=pref3}
@@ -128,21 +127,18 @@
 
 > object getLocations python
 import utilities
-print("Choose one of the available locations:")
 records = utilities.getLocations(int(args[0]))
 return records
 < object
 
 > object getDuration python
 import utilities
-print("Choose one of the available Durations:")
 records = utilities.getDuration(int(args[0]))
 return records
 < object
 
 > object getField python
 import utilities
-print("Choose one of the available Fields:")
 records = utilities.getField(int(args[0]))
 return records
 < object
@@ -155,7 +151,7 @@ return records
 
 > object getRequiredSkills python
 import utilities
-records =utilities.getRequiredSkills(int(args[0]))
+records =utilities.getRequiredSkills()
 return records
 < object
 

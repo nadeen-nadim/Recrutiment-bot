@@ -1,167 +1,169 @@
-import mysql.connector as mysql
-db = mysql.connect(
-    host = "localhost",
-    user = "root",
-    passwd = "",
-    db="recruitment"
-)
+from sqlalchemy import create_engine
 
+db = create_engine('postgres://oetowqpnbuonwk:b58854c08f68596f8ca36436e93fc3e2ae5e91a77d99f054d1f27bb26e651ba8@ec2-3-216-129-140.compute-1.amazonaws.com:5432/dbhb351ushkvo3')
+
+def fill_string(records):
+    string = str(records)
+    string = string.replace ("[", "")
+    string = string.replace ("]", "")
+    string = string.replace (",),", "\n")
+    string = string.replace (")", "\n")
+    string = string.replace (",)", "")
+    string = string.replace ("\'", "")
+    string = string.replace ("\\\\r\\", "")
+    i = 1
+    for char in string:
+        if char == "(":
+            N = string.index("(")
+            string = string[ : N] + str(i)+ "- " + string[N : ]
+            if i>=10:
+                string = string[ : N+3] + str(i)+ "- " + string[N+5 : ]
+            string = string[:N+2] + string[N+4:]
+            i = i + 1
+    return string
+   
 def getLocations(num):
-    cursor = db.cursor()
     query = "SELECT location FROM company WHERE name IN(Select cname FROM offer WHERE intern_ID IN(SELECT ID FROM internselection))"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     if num == -1:
-        return records
+        return "Choose one of the available locations:\n" + string
     if num != -1:
         query3 = "SELECT * FROM internselection WHERE ID IN (SELECT intern_ID From offer WHERE  cname in (SELECT name FROM company where location = %s))" 
-        cursor.execute(query3, records[num-1])
-        records1 = cursor.fetchall()
+        r = db.execute(query3,records[num-1])
+        records1 = r.fetchall()
+        string = fill_string(records1)
         query2 = "DELETE FROM internSelection"
-        cursor.execute(query2)
-        db.commit()
-        return records1
-
-
+        db.execute(query2)
+        return string
 
 def getDuration(num):
-    cursor = db.cursor()
     query = "SELECT duration FROM internselection GROUP BY duration"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     if num == -1:
-       return records
+       return "Choose one of the available Durations:\n"+ string
     if num != -1:
-       
         query1 = "SELECT * FROM internselection WHERE  duration = %s " 
-        cursor.execute(query1,records[num-1])
-        records1 = cursor.fetchall()
+        r = db.execute(query1,records[num-1])
+        records1 = r.fetchall()
+        string = fill_string(records1)
         query2 = "DELETE FROM internSelection"
-        cursor.execute(query2)
-        db.commit()
-        return records1
-    
-
-
-
+        db.execute(query2)
+        return string
 
 def getField(num):
-    cursor = db.cursor()
-    query = "SELECT Field FROM internship GROUP BY Field"
-    cursor.execute(query)
-    records = cursor.fetchall()
-    
-    if num == -1:
-        return records
-    
-   
-    if num != -1:
-        
-        query1 = "INSERT INTO internselection SELECT * FROM internship WHERE field = %s "
-        cursor.execute(query1,records[num-1])
-        db.commit()
-        query2 = " SELECT internshipTitle FROM internselection WHERE field= %s "
-        cursor.execute(query2,records[num-1])
-        records1 = cursor.fetchall()
-        return records1
+   query = "SELECT Field FROM internship GROUP BY Field"
+   r = db.execute(query)
+   records = r.fetchall()
+   string = fill_string(records)
+   if num == -1:
+       return "Choose one of the available Fields:\n" + string
+  
+   if num != -1:
+       query1 = "INSERT INTO internselection SELECT * FROM internship WHERE field = %s "
+       r = db.execute(query1,records[num-1])
+       query2 = " SELECT internshipTitle FROM internselection WHERE field= %s "
+       r = db.execute(query2,records[num-1])
+       records1 = r.fetchall()
+       string = fill_string(records1)
+       return string
+
 
 def getAllInternships():
-    cursor = db.cursor()
     query = "SELECT * FROM internselection"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     query2 = "DELETE FROM internSelection"
-    cursor.execute(query2)
-    db.commit()
-    return records
+    db.execute(query2)
+    return "Suitable Internship(/s):\n" + string
 
 
 
 #Job functions:
 def getMajor(num):
-    cursor = db.cursor()
     query = "SELECT Field FROM job GROUP BY Field"
-    cursor.execute(query)
-    records = cursor.fetchall()
-    
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     if num == -1:
-        return records
+        return "Choose Your major from the list below\n" + string
     if num != -1:
        
         query1 = "INSERT INTO jobselection SELECT * FROM job WHERE field = %s "
-        cursor.execute(query1,records[num-1])
-        db.commit()
+        r = db.execute(query1,records[num-1])
         query2 = " SELECT title FROM jobselection WHERE field= %s"
-        cursor.execute(query2,records[num-1])
-        records1 = cursor.fetchall()
-        return records1
+        r = db.execute(query2,records[num-1])
+        records1 = r.fetchall()
+        string = fill_string(records1)
+        return "The available options:\n" + string 
 
-def getRequiredSkills(num):
-    cursor = db.cursor()
-    if num != -1:
-      
-        query1 = "Select skills from jobselection "
-        cursor.execute(query1)
-        records1 = cursor.fetchall()
-        return records1
+def getRequiredSkills():
+    query1 = "Select skills from jobselection "
+    r = db.execute(query1)
+    records1 = r.fetchall()
+    string = fill_string(records1)
+    return "The job offers we have require the following:\n" + string +"\nDo u meet the requirments ?\n" + "1- Yes\n" + "2- No"
             
 def getJobLocations(num):
-    cursor = db.cursor()
-    query = "SELECT location FROM company WHERE name IN(Select c_name FROM has WHERE J_ID IN(SELECT ID FROM jobselection))"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    query = "SELECT location FROM company WHERE name IN(Select c_name FROM has WHERE J_ID IN(SELECT J_ID FROM jobselection))"
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     if num == -1:
-        return records
+        return "Here is what matches your selection... So glad to help you\n" + string
     if num != -1:
-        query3 = "SELECT * FROM jobselection WHERE ID IN (SELECT J_ID From has WHERE  c_name in (SELECT name FROM company where location = %s))" 
+        query3 = "SELECT * FROM jobselection WHERE J_ID IN (SELECT J_ID From has WHERE  c_name in (SELECT name FROM company where location = %s))" 
         #query1 = "SELECT location FROM company WHERE name IN (Select c_name FROM has WHERE J_ID =%s)  "
-        cursor.execute(query3,records[num-1])
-        records1 = cursor.fetchall()
+        r = db.execute(query3,records[num-1])
+        records1 = r.fetchall()
+        string = fill_string(records1)
         query2 = "DELETE FROM jobselection"
-        cursor.execute(query2)
-        db.commit()
-        return records1
+        db.execute(query2)
+        return string
 
 def getJobType(num):
-    cursor = db.cursor()
     query = "SELECT type FROM jobselection GROUP BY type"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     if num == -1:
-        return records
+        return string
     if num != -1:
         query1 = "SELECT * FROM jobselection WHERE  type = %s "
         
-        cursor.execute(query1,records[num-1])
-        records1 = cursor.fetchall()
+        r = db.execute(query1,records[num-1])
+        records1 = r.fetchall()
+        string = fill_string(records1)
         query2 = "DELETE FROM jobselection"
-        cursor.execute(query2)
-        db.commit()
-        return records1
+        db.execute(query2)
+        return string
 
 def getExperince(num):
-    cursor = db.cursor()
     query = "SELECT experience FROM jobselection GROUP BY experience"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     if num == -1:
-        return records
+        return "Do you have any of the following experiences ?\n" + string
     if num != -1:
 
         query1 = "Delete FROM jobselection WHERE experience > %s "
-        cursor.execute(query1,records[num-1])
-        db.commit()
+        r = db.execute(query1,records[num-1])
         query2 = "SELECT title from jobselection"
-        cursor.execute(query2)
-        records1 = cursor.fetchall()
-        return records1
+        r = db.execute(query2)
+        records1 = r.fetchall()
+        string = fill_string(records1)
+        return string
 
 def getAllJobs():
-    cursor = db.cursor()
     query = "SELECT * FROM jobselection"
-    cursor.execute(query)
-    records = cursor.fetchall()
+    r = db.execute(query)
+    records = r.fetchall()
+    string = fill_string(records)
     query2 = "DELETE FROM jobSelection"
-    cursor.execute(query2)
-    db.commit()
-    return records
+    db.execute(query2)
+    return string

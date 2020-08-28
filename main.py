@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
-import bot
+from flask import Flask, request
 from flask import render_template
+import bot
 app = Flask(__name__)
+
 @app.route("/")
 def chat():
     bot.reload()
@@ -9,8 +10,6 @@ def chat():
     #while True:
        # msg = str(input('me> '))
         #print('bot> ' + bot.chat(msg))
-
-
 
 @app.route("/get")
 def get_bot_response():
@@ -20,6 +19,4 @@ def get_bot_response():
 
 if __name__ == "__main__":
     app.run()
-    
-
-    
+        
