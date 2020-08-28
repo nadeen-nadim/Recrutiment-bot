@@ -64,18 +64,18 @@
 + #
 * <star> == 1 => <set num=-1><call>getLocations <get num></call> {topic=location}
 * <star> == 2 => <set num=-1><call>getDuration <get num></call> {topic=duration}
-* <star> == 3 => <call>getAllInternships  </call>{topic=welcome}
+* <star> == 3 => <call>getAllInternships  </call>{topic=random}
 - please choose correct number{topic=pref2}
 < topic
 
 > topic location
 + #
-- <set num=<star>> <call>getLocations <get num> </call>{topic=welcome}
+- <set num=<star>> <call>getLocations <get num> </call>{topic=random}
 < topic
 
 > topic duration
 + #
-- <set num=<star>> <call>getDuration <get num> </call>{topic=welcome}
+- <set num=<star>> <call>getDuration <get num> </call>{topic=random}
 < topic
 
 > topic job
@@ -109,7 +109,7 @@
 
 > topic pref3
 + #
-* <star> == 1 => <call>getAllJobs  </call>{topic=welcome}
+* <star> == 1 => <call>getAllJobs  </call>{topic=random}
 * <star> == 2 => <set num=-1><call>getJobType <get num></call> {topic=type}
 * <star> == 3 => <set num=-1><call>getJobLocations <get num></call> {topic=joblocation}
 - try again please{topic=pref3}
@@ -117,12 +117,12 @@
 
 > topic type
 + #
-- <set num=<star>> <call>getJobType <get num> </call>{topic=welcome} 
+- <set num=<star>> <call>getJobType <get num> </call>{topic=random} 
 < topic
 
 > topic joblocation
 + #
-- <set num=<star>> <call>getJobLocations <get num> </call>{topic=welcome} 
+- <set num=<star>> <call>getJobLocations <get num> </call>{topic=random} 
 < topic
 
 > object getLocations python
