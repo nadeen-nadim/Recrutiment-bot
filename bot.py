@@ -1,7 +1,7 @@
 from rivescript import RiveScript
 from sqlalchemy import create_engine
-
-db = create_engine('postgres://oetowqpnbuonwk:b58854c08f68596f8ca36436e93fc3e2ae5e91a77d99f054d1f27bb26e651ba8@ec2-3-216-129-140.compute-1.amazonaws.com:5432/dbhb351ushkvo3')
+import os
+db = create_engine(os.getenv('DATABASE_URL'))
 bot = RiveScript(utf8=True)
 
 bot.load_directory("brain")
